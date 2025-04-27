@@ -1,0 +1,29 @@
+{% extends "base/base.html" %}
+
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Your Properties</h2>
+    <a href="{% url 'create_house' %}" class="btn btn-primary mb-3">Add New Property</a>
+    
+    <div class="row">
+        {% for house in houses %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ house.title }}</h5>
+                    <p class="card-text">{{ house.address }}</p>
+                    <p class="card-text">${{ house.price }}/month</p>
+                    <a href="#" class="btn btn-sm btn-info">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>You haven't listed any properties yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

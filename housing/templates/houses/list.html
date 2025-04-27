@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Available Houses</h2>
+<div class="house-list">
+    {% for house in houses %}
+    <div class="house-card">
+        <h3>{{ house.title }}</h3>
+        <p>{{ house.address }}</p>
+        <p>Price: ${{ house.price }}/month</p>
+        <a href="{% url 'rent_house' house.id %}" class="btn">Rent This House</a>
+    </div>
+    {% empty %}
+    <p>No houses available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}
