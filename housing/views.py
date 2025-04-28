@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, HouseForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, HouseForm, ProfileForm, RentalForm
 from django.contrib.auth.decorators import login_required
 from .permissions import owner_required, student_required
-from .models import House, RentalAgreement
+from .models import House, RentalAgreement, Rental
+from django.contrib import messages
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -37,6 +39,19 @@ def logout_view(request):
 
 def home_view(request):
     return render(request, 'home.html')
+
+
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # Refresh after save
+    else:
+        form = ProfileForm(instance=request.user)
+    
+    return render(request, 'profile/profile.html', {'form': form})
 
 
 
@@ -94,3 +109,44 @@ def owner_dashboard(request):
     """Dashboard view for property owners"""
     houses = House.objects.filter(owner=request.user)
     return render(request, 'owners/dashboard.html', {'houses': houses})
+
+
+
+
+@login_required
+@student_required
+def student_dashboard(request):
+    """View for student's rental dashboard"""
+    rentals = Rental.objects.filter(student=request.user)
+    return render(request, 'students/dashboard.html', {'rentals': rentals})
+
+
+@login_required
+def rent_house(request, house_id):
+    house = get_object_or_404(House, id=house_id, is_available=True)
+    
+    if request.user.role != 'student':
+        messages.error(request, "Only students can rent houses")
+        return redirect('listings')
+    
+    if request.method == 'POST':
+        form = RentalForm(request.POST)
+        if form.is_valid():
+            rental = form.save(commit=False)
+            rental.house = house
+            rental.student = request.user
+            rental.save()
+            
+            # Mark house as unavailable
+            house.is_available = False
+            house.save()
+            
+            messages.success(request, "House rented successfully!")
+            return redirect('student_dashboard')
+    else:
+        form = RentalForm()
+    
+    return render(request, 'houses/rent.html', {
+        'house': house,
+        'form': form
+    })

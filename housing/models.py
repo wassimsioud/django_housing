@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 from django.db import models
 
 class CustomUser(AbstractUser):
@@ -12,6 +13,11 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+
+    def get_role_display(self):
+        """Human-readable role name"""
+        return dict(self._meta.get_field('role').choices).get(self.role, self.role)
 
 
 
@@ -38,3 +44,22 @@ class RentalAgreement(models.Model):
     
     def __str__(self):
         return f"{self.student} renting {self.house}"
+    
+
+User = get_user_model()
+
+class Rental(models.Model):
+    house = models.ForeignKey('House', on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'student'})
+    start_date = models.DateField()
+    end_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], default='pending')
+
+    def __str__(self):
+        return f"{self.student.username} - {self.house.title}"

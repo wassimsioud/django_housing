@@ -18,6 +18,9 @@
                 </div>
                 <div class="card-footer">
                     <a href="#" class="btn btn-primary">View Details</a>
+                    {% if user.is_authenticated and user.role == 'student' %}
+                    <a href="{% url 'rent_house' house.id %}" class="btn btn-secondary">Rent Now</a>
+                {% endif %}
                 </div>
             </div>
         </div>

@@ -1,0 +1,69 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="rental-container">
+    <h2>Rent {{ house.title }}</h2>
+    <div class="house-details">
+        <p><strong>Price:</strong> ${{ house.price }}/month</p>
+        <p><strong>Location:</strong> {{ house.address }}</p>
+        <p><strong>Bedrooms:</strong> {{ house.bedrooms }}</p>
+    </div>
+    
+    <form method="post" class="rental-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-rent">Confirm Rental</button>
+    </form>
+</div>
+
+<style>
+    .rental-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .house-details {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+    
+    .rental-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .rental-form label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .rental-form input {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+    
+    .btn-rent {
+        background: #4CAF50;
+        color: white;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+    
+    .btn-rent:hover {
+        background: #3e8e41;
+    }
+</style>
+{% endblock %}

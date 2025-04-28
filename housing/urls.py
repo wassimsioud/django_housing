@@ -8,6 +8,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('', views.home_view, name='home'),
+    path('profile/', views.profile_view, name='profile'),
+
 
 
     # Owner URLs
@@ -22,5 +24,10 @@ urlpatterns = [
     
 
     path('listings/', views.listings_view, name='listings'),
+
+
+    path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
+
+    path('houses/<int:house_id>/rent/', views.rent_house, name='rent_house'),
 
 ]

@@ -1,0 +1,33 @@
+{% extends "base/base.html" %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>My Rentals</h2>
+    
+    {% if rentals %}
+    <div class="list-group">
+        {% for rental in rentals %}
+        <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ rental.house.title }}</h5>
+                <span class="badge bg-{% if rental.is_active %}success{% else %}secondary{% endif %}">
+                    {{ rental.status }}
+                </span>
+            </div>
+            <p class="mb-1">{{ rental.house.address }}</p>
+            <small>
+                {{ rental.start_date }} to {{ rental.end_date }} | 
+                ${{ rental.house.price }}/month
+            </small>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You don't have any rentals yet. <a href="{% url 'listings' %}">Browse listings</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
