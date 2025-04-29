@@ -13,7 +13,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')  # redirect to home page after registration
+            return redirect('home')
     else:
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
@@ -22,7 +22,7 @@ def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('username')  # AuthenticationForm uses 'username' field internally
+            email = form.cleaned_data.get('username') 
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=email, password=password)
             if user is not None:
@@ -47,7 +47,7 @@ def profile_view(request):
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('profile')  # Refresh after save
+            return redirect('profile') 
     else:
         form = ProfileForm(instance=request.user)
     
@@ -137,7 +137,6 @@ def rent_house(request, house_id):
             rental.student = request.user
             rental.save()
             
-            # Mark house as unavailable
             house.is_available = False
             house.save()
             
